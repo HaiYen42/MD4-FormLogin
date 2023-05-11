@@ -66,21 +66,27 @@ public class UserServiceIMPL implements IUserService {
     @Override
     public void save(User user) {
         try {
+            // setAutoCommit(false)--> ko để commit tự động
             connection.setAutoCommit(false);
+            // Statement.RETURN_GENERATED_KEYS --> để nhận id từ database xuống do he thong tự tạo --> dùng để tạo dữ liệu trong bảng user_role
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_INTO_USER, Statement.RETURN_GENERATED_KEYS);
+           // lấy thuộc tính từ username để set vào truy vấn
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2,user.getUsername());
             preparedStatement.setString(3,user.getEmail());
             preparedStatement.setString(4,user.getPassword());
             preparedStatement.setString(5, user.getAvatar());
+            // excuteUpdate --> để đẩy vào database
             preparedStatement.executeUpdate();
             int user_id = 0;
+            // resultSet để nhận lấy generatedkey từ database xuống
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             while (resultSet.next()){
                 user_id = resultSet.getInt(1);
             }
             //SET user_id và role_id vào bảng trung gian user_role
             PreparedStatement preparedStatement1 = connection.prepareStatement(INSERT_INTO_USER_ROLE);
+            // đẩy dữ liệu vào bảng roleSet
             Set<Role> roleSet = user.getRoleSet();
             List<Role> roleList = new ArrayList<>(roleSet);  //convert set --> list
             List<Integer> listRoleId = new ArrayList<>();

@@ -168,8 +168,10 @@ private IUserService userService = new UserServiceIMPL();
     }
     // Chức năng change avatar
     private void showFormChangeAvatar(HttpServletRequest request, HttpServletResponse response){
+        // gửi 1 request đến 1 file path jsp khác--> chuyển hướng sang path jsp
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/upload/upload-avatar.jsp");
         try {
+            // chuyển tiếp 2 yêu cầu và phản hồi sang fontend
             dispatcher.forward(request,response);
         } catch (ServletException e) {
             throw new RuntimeException(e);
@@ -179,6 +181,7 @@ private IUserService userService = new UserServiceIMPL();
     }
     private void actionUpdateAvatar(HttpServletRequest request, HttpServletResponse response){
         String avatar = request.getParameter("avatar");
+
         HttpSession session = request.getSession(false);
         User user = (User) session.getAttribute("user");
         userService.updateAvatar(avatar, user.getId());
